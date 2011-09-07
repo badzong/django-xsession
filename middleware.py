@@ -1,7 +1,7 @@
 # coding=utf-8
 import settings
 from django.http import HttpResponse
-
+import time, datetime
 
 class XSessionMiddleware(object):
 
@@ -23,7 +23,7 @@ class XSessionMiddleware(object):
         request.xsession = True
 
         # Skip regular requests
-        if path != settings.XSESSION_FILENAME:
+        if path != settings.__dict__.get('XSESSION_FILENAME','xsession_loader.js'):
             return
 
         # Get session cookie
@@ -33,7 +33,12 @@ class XSessionMiddleware(object):
         except KeyError:
             return HttpResponse('', mimetype="text/javascript")
 
+        # Default age (see Django docs)
+        age = settings.__dict__.get('SESSION_COOKIE_AGE', 1209600)
+        expire = int(time.time()) + age
+        utc = datetime.datetime.utcfromtimestamp(expire)
+
         # Got session. Set sessionid and reload
-        javascript = "document.cookie='%s=%s'; window.location.reload();" % (cookie, sessionid)
+        javascript = "document.cookie='%s=%s; expires=%s'; window.location.reload();" % (cookie, sessionid, utc)
 
         return HttpResponse(javascript, mimetype="text/javascript")

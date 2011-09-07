@@ -37,7 +37,7 @@ def xsession_loader(context):
         pass
 
     render_context = {
-        'path': settings.XSESSION_FILENAME,
+        'path': settings.__dict__.get('XSESSION_FILENAME', 'xsession_loader.js'),
         'domains': domains,
     }
 
