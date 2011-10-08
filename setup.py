@@ -1,6 +1,6 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
-setup(name='django-xsession',
+setup(name='django_xsession',
       version='0.1',
       description='Django middleware that allows cookie sharing across multiple domains.',
       author='Factor AG',
@@ -8,7 +8,8 @@ setup(name='django-xsession',
       url='https://github.com/FactorAG/django-xsession',
       license='LGPLv3',
       keywords='django single sign on cookie sharing',
-      packages=['django-xsession'],
+      packages=find_packages(),
+      include_package_data=True,
       platforms=['any'],
       classifiers=[
           'Development Status :: 4 - Beta',

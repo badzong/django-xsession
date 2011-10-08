@@ -1,10 +1,10 @@
 import copy
-import settings
+from django.conf import settings
 from django import template
 
 register = template.Library()
 
-@register.inclusion_tag('xsession.html', takes_context=True)
+@register.inclusion_tag('django_xsession/loader.html', takes_context=True)
 def xsession_loader(context):
 
     try:

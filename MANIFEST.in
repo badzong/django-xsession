@@ -1,4 +1,3 @@
 include README.md
 include LICENSE
-recursive-include django-xsession *
 recursive-exclude * *.pyc
