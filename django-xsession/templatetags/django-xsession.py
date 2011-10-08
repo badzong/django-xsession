@@ -25,11 +25,13 @@ def xsession_loader(context):
     else:
         return {}
 
+    # No session found
     try:
         host = request.META['HTTP_HOST']
     except KeyError:
         return {}
 
+    # Build domain list
     domains = copy.copy(settings.XSESSION_DOMAINS)
     try:
         domains.remove(host)
