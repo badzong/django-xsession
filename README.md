@@ -20,6 +20,7 @@ Add django_xsession to your INSTALLED_APPS and load the XSessionMiddleware
 class. Then set the domain names you want to share the session cookie.
 
 settings.py snippet:
+
 ```python
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
@@ -41,7 +42,6 @@ INSTALLED_APPS = (
 )
 
 XSESSION_DOMAINS = ['www.domain1.org', 'www.domain2.org', 'www.domain3.org']
-
 ```
 
 You also need to add the xsession_loader to the head section of your base
