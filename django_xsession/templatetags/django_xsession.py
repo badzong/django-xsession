@@ -22,6 +22,8 @@ def xsession_loader(context):
         sessionid = request.COOKIES[cookie]
     except KeyError, AttributeError:
         pass
+    else:
+        return {}
 
     # No session found
     try:
