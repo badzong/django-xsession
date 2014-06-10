@@ -23,7 +23,8 @@ class XSessionMiddleware(object):
         request.xsession = True
 
         # Skip regular requests
-        if path != settings.__dict__.get('XSESSION_FILENAME','xsession_loader.js'):
+        loader_path = getattr(settings, 'XSESSION_FILENAME', 'xsession_loader.js')
+        if path != loader_path:
             return
 
         # Get session cookie
