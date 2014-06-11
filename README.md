@@ -60,3 +60,5 @@ base.html (or whatever filename you use):
     </body>
 </html>
 ```
+
+You'll need to make sure that you're rendering the template with `RequestContext`, as well.
