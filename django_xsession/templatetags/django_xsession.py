@@ -16,13 +16,11 @@ def xsession_loader(context):
     if not hasattr(request, 'xsession'):
         return {}
 
-    # Try to load session
-    cookie = settings.__dict__.get('SESSION_COOKIE_NAME', 'sessionid')
-    try:
-        sessionid = request.COOKIES[cookie]
-    except KeyError, AttributeError:
-        pass
-    else:
+    if request.session.keys() or request.user.is_authenticated():
+        return {}
+
+    cookie = getattr(settings, 'SESSION_COOKIE_NAME', 'sessionid')
+    if request.COOKIES.get(cookie, None):
         return {}
 
     # No session found
@@ -39,7 +37,7 @@ def xsession_loader(context):
         pass
 
     render_context = {
-        'path': settings.__dict__.get('XSESSION_FILENAME', 'xsession_loader.js'),
+        'path': getattr(settings, 'XSESSION_FILENAME', 'xsession_loader.js'),
         'domains': domains,
     }
 

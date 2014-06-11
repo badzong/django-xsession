@@ -1,3 +1,5 @@
 include README.md
 include LICENSE
+recursive-include django_xsession/templates *.html
+
 recursive-exclude * *.pyc
