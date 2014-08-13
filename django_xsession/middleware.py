@@ -51,7 +51,13 @@ class XSessionMiddleware(object):
         # Clear out expired session cookies.  We need to do this because, by default, our Django session
         # cookies are set with httpOnly, meaning we can't clear them using our JS shim here.
         cookie = getattr(settings, 'SESSION_COOKIE_NAME', 'sessionid')
-        if request.COOKIES.get(cookie) and not (request.session.keys() or request.user.is_authenticated()):
+        if not hasattr(request, 'session') and not hasattr(request, 'user'):
+            # Not far enough along in the django request cycle, so this is likely
+            # a middleware response. Let's just return and do nothing here.
+            return response
+
+        has_session_or_auth = request.session.keys() or request.user.is_authenticated()
+        if request.COOKIES.get(cookie) and not has_session_or_auth:
             response.delete_cookie(cookie, domain=getattr(settings, 'SESSION_COOKIE_DOMAIN', ''))
         else:
             # If we just got a session cookie via our JS shim, we should re-add the cookie as httpOnly
