@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='django_xsession',
-      version='0.1-custom2',
+      version='0.1-custom3',
       description='Django middleware that allows cookie sharing across multiple domains.',
       author='Factor AG',
       author_email='webmaster@factor.ch',
