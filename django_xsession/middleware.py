@@ -60,13 +60,18 @@ class XSessionMiddleware(object):
             # Not far enough along in the django request cycle, so this is likely
             # a middleware response. Let's just return and do nothing here.
             return response
-
+ 
         has_session_or_auth = (
             (hasattr(request, 'session') and request.session.keys()) or
             (hasattr(request, 'user') and request.user.is_authenticated())
         )
         if request.COOKIES.get(cookie) and not has_session_or_auth:
-            response.delete_cookie(cookie, domain=getattr(settings, 'SESSION_COOKIE_DOMAIN', ''))
+            hostname = request.META.get('HTTP_HOST', '').split(':')[0]
+            session_domain = getattr(settings, 'SESSION_COOKIE_DOMAIN', '')
+            if session_domain.endswith(hostname):
+                response.delete_cookie(cookie, domain=session_domain)
+            else:
+                response.delete_cookie(cookie, domain='')
         else:
             # If we just got a session cookie via our JS shim, we should re-add the cookie as httpOnly
             if request.COOKIES.get('set_httponly'):
