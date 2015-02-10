@@ -29,12 +29,11 @@ def xsession_loader(context):
     except KeyError:
         return {}
 
-    # Build domain list
+    # Build domain list, with support for subdomains
     domains = copy.copy(settings.XSESSION_DOMAINS)
-    try:
-        domains.remove(host)
-    except ValueError:
-        pass
+    for domain in settings.XSESSION_DOMAINS:
+        if host.endswith(domain):
+            domains.remove(domain)
 
     render_context = {
         'path': getattr(settings, 'XSESSION_FILENAME', 'xsession_loader.js'),

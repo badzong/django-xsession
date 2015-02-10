@@ -27,7 +27,12 @@ class XSessionMiddleware(object):
         if path != loader_path:
             return
 
-        if not request.session.keys() and not request.user.is_authenticated():
+        if not hasattr(request, 'session') and not hasattr(request, 'user'):
+            # Not far enough along in the django request cycle, so this is likely
+            # a middleware response. Let's just return and do nothing here.
+            return HttpResponse('', mimetype="text/javascript")
+
+        if not (hasattr(request, 'session') and request.session.keys()) and not (hasattr(request, 'user') and request.user.is_authenticated()):
             return HttpResponse('', mimetype="text/javascript")
 
         # Get session cookie
@@ -51,8 +56,22 @@ class XSessionMiddleware(object):
         # Clear out expired session cookies.  We need to do this because, by default, our Django session
         # cookies are set with httpOnly, meaning we can't clear them using our JS shim here.
         cookie = getattr(settings, 'SESSION_COOKIE_NAME', 'sessionid')
-        if request.COOKIES.get(cookie) and not (request.session.keys() or request.user.is_authenticated()):
-            response.delete_cookie(cookie, domain=getattr(settings, 'SESSION_COOKIE_DOMAIN', ''))
+        if not hasattr(request, 'session') and not hasattr(request, 'user'):
+            # Not far enough along in the django request cycle, so this is likely
+            # a middleware response. Let's just return and do nothing here.
+            return response
+ 
+        has_session_or_auth = (
+            (hasattr(request, 'session') and request.session.keys()) or
+            (hasattr(request, 'user') and request.user.is_authenticated())
+        )
+        if request.COOKIES.get(cookie) and not has_session_or_auth:
+            hostname = request.META.get('HTTP_HOST', '').split(':')[0]
+            session_domain = getattr(settings, 'SESSION_COOKIE_DOMAIN', '')
+            if session_domain.endswith(hostname):
+                response.delete_cookie(cookie, domain=session_domain)
+            else:
+                response.delete_cookie(cookie, domain='')
         else:
             # If we just got a session cookie via our JS shim, we should re-add the cookie as httpOnly
             if request.COOKIES.get('set_httponly'):
