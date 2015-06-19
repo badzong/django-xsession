@@ -30,10 +30,10 @@ class XSessionMiddleware(object):
         if not hasattr(request, 'session') and not hasattr(request, 'user'):
             # Not far enough along in the django request cycle, so this is likely
             # a middleware response. Let's just return and do nothing here.
-            return HttpResponse('', mimetype="text/javascript")
+            return HttpResponse('', content_type="text/javascript")
 
         if not (hasattr(request, 'session') and request.session.keys()) and not (hasattr(request, 'user') and request.user.is_authenticated()):
-            return HttpResponse('', mimetype="text/javascript")
+            return HttpResponse('', content_type="text/javascript")
 
         # Get session cookie
         cookie = getattr(settings, 'SESSION_COOKIE_NAME', 'sessionid')
@@ -50,7 +50,7 @@ class XSessionMiddleware(object):
         else:
             javascript = "document.cookie='%s=%s; expires=%s'; window.location.reload();" % (cookie, sessionid, utc)
 
-        return HttpResponse(javascript, mimetype="text/javascript")
+        return HttpResponse(javascript, content_type="text/javascript")
 
     def process_response(self, request, response):
         # Clear out expired session cookies.  We need to do this because, by default, our Django session
