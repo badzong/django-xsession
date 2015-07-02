@@ -67,7 +67,8 @@ class XSessionMiddleware(object):
         )
         if request.COOKIES.get(cookie) and not has_session_or_auth:
             hostname = request.META.get('HTTP_HOST', '').split(':')[0]
-            session_domain = getattr(settings, 'SESSION_COOKIE_DOMAIN', '')
+            # Default value in Django settings is None for SESSION_COOKIE_DOMAIN, and None has no 'endswith' attribute
+            session_domain = getattr(settings, 'SESSION_COOKIE_DOMAIN', '') or ''
             if session_domain.endswith(hostname):
                 response.delete_cookie(cookie, domain=session_domain)
             else:
