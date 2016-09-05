@@ -38,6 +38,7 @@ def xsession_loader(context):
     render_context = {
         'path': getattr(settings, 'XSESSION_FILENAME', 'xsession_loader.js'),
         'domains': domains,
+        'port': str(request.META['SERVER_PORT']),  # if port 8080, 8000 and etc
     }
 
     return render_context
