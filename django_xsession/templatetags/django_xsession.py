@@ -27,6 +27,21 @@ def xsession_loader(context):
     host = request.META.get('HTTP_HOST', '').split(':')[0]
     if not host:
         return {}
+    
+    # protocol
+    if request.is_secure():
+        proto = 'https'
+    else:
+        proto = 'http'
+        
+    # Port
+    port = request.META.get('SERVER_PORT', None)
+    if port == 80 and proto == 'http':
+        port = None
+    elif port == 443 and proto == 'https':
+        port = None
+    else
+        port = str(port)
 
     # Build domain list, with support for subdomains
     domains = copy.copy(settings.XSESSION_DOMAINS)
@@ -37,7 +52,8 @@ def xsession_loader(context):
     render_context = {
         'path': getattr(settings, 'XSESSION_FILENAME', 'xsession_loader.js'),
         'domains': domains,
-        'port': str(request.META['SERVER_PORT']),  # if port 8080, 8000 and etc
+        'proto': proto,
+        'port': port,  # if port 8080, 8000 and etc
     }
 
     return render_context

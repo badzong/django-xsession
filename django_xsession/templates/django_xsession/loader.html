@@ -1,3 +1,3 @@
 {% for domain in domains %}
-    <script type="text/javascript" src="//{{ domain }}{% if port %}:{{ port }}{% endif %}/{{ path }}"></script>
+    <script type="text/javascript" src="{{ proto }}://{{ domain }}{% if port %}:{{ port }}{% endif %}/{{ path }}"></script>
 {% endfor %}
