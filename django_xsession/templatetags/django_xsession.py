@@ -24,9 +24,8 @@ def xsession_loader(context):
         return {}
 
     # No session found
-    try:
-        host = request.META['HTTP_HOST']
-    except KeyError:
+    host = request.META.get('HTTP_HOST', '').split(':')[0]
+    if not host:
         return {}
 
     # Build domain list, with support for subdomains
@@ -38,6 +37,7 @@ def xsession_loader(context):
     render_context = {
         'path': getattr(settings, 'XSESSION_FILENAME', 'xsession_loader.js'),
         'domains': domains,
+        'port': str(request.META['SERVER_PORT']),  # if port 8080, 8000 and etc
     }
 
     return render_context
