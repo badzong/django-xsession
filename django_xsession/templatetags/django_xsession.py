@@ -36,11 +36,11 @@ def xsession_loader(context):
         
     # Port
     port = request.META.get('SERVER_PORT', None)
-    if port == 80 and proto == 'http':
+    if port == '80' and proto == 'http':
         port = None
-    elif port == 443 and proto == 'https':
+    elif port == '443' and proto == 'https':
         port = None
-    else
+    else:
         port = str(port)
 
     # Build domain list, with support for subdomains
